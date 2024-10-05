@@ -1,0 +1,21 @@
+SELECT *
+FROM (
+    SELECT 
+        p.ci,
+        p.nombre,
+        p.paterno,
+        CASE 
+            WHEN LEFT(c.id, 1) = '1' THEN 'Alto'
+            WHEN LEFT(c.id, 1) = '2' THEN 'Medio'
+            WHEN LEFT(c.id, 1) = '3' THEN 'Bajo'
+            ELSE 'Desconocido'
+        END AS TipoImpuesto
+    FROM 
+        Persona p
+    INNER JOIN 
+        Catastro c ON p.ci = c.ci_persona
+) AS SourceTable
+PIVOT (
+    COUNT(ci)
+    FOR TipoImpuesto IN ([Alto], [Medio], [Bajo], [Desconocido])
+) AS PivotTable;
